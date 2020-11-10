@@ -19,14 +19,16 @@ public abstract class DaoFactory {
 	public abstract IUserDAO getUserDAO();
 	
 	public abstract IMessageDAO getMessageDAO();
+	
+	public abstract Connection getConnection();
+	
 
 	///////////////////////
-	
-//	public abstract Connection getConnection();
-//
 //	public abstract void close();
 //
 //	public abstract void open() throws SQLException;
+	
+
 //
 //	public abstract void beginTransation() throws SQLException;
 //

@@ -16,81 +16,39 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import com.Socialnet.project.command.ICommand;
+import com.Socialnet.project.dao.DaoFactory;
+import com.Socialnet.project.dao.IUserDAO;
 import com.Socialnet.project.entity.User;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 public class HomePageCommand implements ICommand {
 
+	private static DaoFactory daoFactory;
+	private static IUserDAO userDao;
+	
+	static {
+		daoFactory = DaoFactory.getDaoFactory("MYSQL");
+		userDao = daoFactory.getUserDAO();
+	}
+	
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			main(null);
-		} catch (SQLException | NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public String execute(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
+//		try {
+//			main(null);
+//		} catch (SQLException | NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		List<User> list = userDao.findAll();
+		list.forEach(item -> System.out.println(item.getName()));
+		
+		User user1 = userDao.findByName("Tony");
+		System.out.println("id: " + user1.getId());
+		User user2 = userDao.findByName("Bruce");
+		System.out.println("id: " + user2.getId());
+		
 		return "HomePage";
 	}
 
-	public static void main(String[] args) throws SQLException, NamingException {
-		// OPTION 1
-		MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-		
-		String username = "user";
-		String password = "userpass";
-		String host = "localhost";
-		String port = "3306";
-		String dbName = "mydb";
-
-		String url = String.format("jdbc:mysql://%s:%s/%s?characterEncoding=utf-8", host, port, dbName);
-		ds.setUrl(url);
-		ds.setPassword(password);
-		ds.setUser(username);
-		
-		// OPTION 2
-//		DataSource ds = new MysqlConnectionPoolDataSource();
-//		// Obtain environment naming context
-//		Context initCtx = new InitialContext();
-//		Context envCtx = (Context) initCtx.lookup("java:comp/env");
-//
-//		// Look up data source
-//		ds = (DataSource) envCtx.lookup("jdbc/mydb");
-		
-		// OPTION 3
-//		MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
-//		ResourceBundle db = ResourceBundle.getBundle("app");
-//		String username = db.getString("db.user");
-//		String password = db.getString("db.password");
-//		String host = db.getString("db.host");
-//		String port = db.getString("db.port");
-//		String dbName = db.getString("db.dbName");
-//
-//		String url = String.format("jdbc:mysql://%s:%s/%s?characterEncoding=utf-8", host, port, dbName);
-//		ds.setUrl(url);
-//		ds.setPassword(password);
-//		ds.setUser(username);
-		
-		
-		Connection connection = ds.getConnection();
-		List<User> list = new ArrayList<>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = connection.prepareStatement("SELECT * FROM Users");
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				User user = new User();
-				user.setId(rs.getInt("id"));
-				user.setName(rs.getString("name"));
-				list.add(user);
-			}
-		} finally {
-			ps.close();
-			rs.close();
-			connection.close();
-		}
-		list.forEach(item -> System.out.println(item.getId() +  " " + item.getName()));
-		
-	
-	}
 }

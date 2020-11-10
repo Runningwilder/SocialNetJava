@@ -1,6 +1,7 @@
 package com.Socialnet.project.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +30,11 @@ public class FrontController extends HttpServlet {
 
 	private String handleRequest(HttpServletRequest req, HttpServletResponse resp) {
 		ICommand iCommand = CommandFactory.getCommand(req);
-		return iCommand.execute(req, resp);
+		try {
+			return iCommand.execute(req, resp);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }
