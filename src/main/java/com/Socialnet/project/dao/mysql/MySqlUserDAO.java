@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Socialnet.project.dao.DaoFactory;
+import com.Socialnet.project.dao.GenericDAO;
 import com.Socialnet.project.dao.IUserDAO;
 import com.Socialnet.project.entity.User;
 
-public class MySqlUserDAO implements IUserDAO {
+public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 
 	private static MySqlUserDAO instance;
 	private static DaoFactory daoFactory;
@@ -56,26 +57,16 @@ public class MySqlUserDAO implements IUserDAO {
 
 	@Override
 	public List<User> findAll() throws SQLException {
-		Connection connection = daoFactory.getConnection();
-		List<User> list = new ArrayList<>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 
-		try {
-			ps = connection.prepareStatement("SELECT * FROM Users");
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				User user = new User();
-				user.setId(rs.getInt("id"));
-				user.setName(rs.getString("name"));
-				list.add(user);
-			}
-		} finally {
-			ps.close();
-			rs.close();
-			connection.close();
-		}
-		return list;
+		return findAll(daoFactory.getConnection(), "SELECT * FROM Users");
+	}
+
+	@Override
+	protected User mapToEntity(ResultSet rs) throws SQLException{
+		User user = new User();
+		user.setId(rs.getInt("id"));
+		user.setName(rs.getString("name"));
+		return user;
 	}
 
 
