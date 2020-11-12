@@ -17,35 +17,34 @@ import javax.sql.DataSource;
 
 import com.Socialnet.project.command.ICommand;
 import com.Socialnet.project.dao.DaoFactory;
+import com.Socialnet.project.dao.IMessageDAO;
 import com.Socialnet.project.dao.IUserDAO;
+import com.Socialnet.project.entity.Message;
 import com.Socialnet.project.entity.User;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 public class HomePageCommand implements ICommand {
 
 	private static IUserDAO userDao;
+	private static IMessageDAO messageDao;
 	private static DaoFactory daoFactory;
-	
+
 	static {
 		daoFactory = DaoFactory.getDaoFactory("MYSQL");
 		userDao = daoFactory.getUserDAO();
+		messageDao = daoFactory.getMessageDAO();
 	}
-	
+
 	@Override
-	public String execute(HttpServletRequest req, HttpServletResponse resp) {
-		List<User> list;
-		try {
-			list = userDao.findAll();
-			list.forEach(item -> System.out.println(item.getId() + " " + item.getName()));
-			
-			/////////////////
-			
-			User user1 = userDao.findByName("Tony");
-			System.out.println("id: " + user1.getId());
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public String execute(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
+		List<User> list = userDao.findAll();
+		list.forEach(item -> System.out.println(item.getId() + " " + item.getName()));
+
+		/////////////////
+
+		List<Message> messages = messageDao.findAll();
+		messages.forEach(item -> System.out.println(item.getId() + " " + item.getContent()));
+
 		return "HomePage";
 	}
 }

@@ -21,4 +21,6 @@ public abstract class DaoFactory {
 
 	public abstract Connection getConnection();
 
+	public abstract IMessageDAO getMessageDAO();
+
 }

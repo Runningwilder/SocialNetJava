@@ -13,6 +13,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.Socialnet.project.dao.DaoFactory;
+import com.Socialnet.project.dao.IMessageDAO;
 import com.Socialnet.project.dao.IUserDAO;
 import com.Socialnet.project.entity.User;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
@@ -56,6 +57,11 @@ public class MySqlDAOFactory extends DaoFactory {
 	@Override
 	public IUserDAO getUserDAO() {
 		return MySqlUserDAO.getIntance();
+	}
+
+	@Override
+	public IMessageDAO getMessageDAO() {
+		return MySqlMessageDAO.getIntance();
 	}
 
 
