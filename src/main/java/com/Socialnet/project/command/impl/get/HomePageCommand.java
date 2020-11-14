@@ -29,13 +29,26 @@ public class HomePageCommand implements ICommand {
 	public String execute(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
 		// User part
 		
+		User user1 = new User();
+		user1.setName("Thor");
+		user1.setRoleId(1);
+		userDao.add(user1);
+		System.out.println("### User added. Id set to: " + user1.getId());
+		
+		user1.setName("Hawkeye");
+		userDao.update(user1);
+		System.out.println("### User updated");
+		User user2 = userDao.findById(user1.getId());
+		System.out.println("New name: " + user2.getName());
+		
 		List<User> list = userDao.findAll();
 		list.forEach(item -> System.out.println(item.getId() + " " + item.getName()));
-
-		// Message part
-
-		List<Message> msgs = messageDao.findAll();
-		msgs.forEach(item -> System.out.println(item.getId() + " " + item.getContent()));
+		
+		userDao.delete(user1.getId());
+		System.out.println("### User deleted");
+		
+		list = userDao.findAll();
+		list.forEach(item -> System.out.println(item.getId() + " " + item.getName()));
 
 		return "HomePage";
 	}
