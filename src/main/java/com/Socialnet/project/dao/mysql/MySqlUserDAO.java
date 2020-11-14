@@ -16,43 +16,23 @@ public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 
 	private static MySqlUserDAO instance;
 	private static DaoFactory daoFactory;
-	
-	
+
 	static {
 		daoFactory = DaoFactory.getDaoFactory("MYSQL");
 	}
 
 	public static IUserDAO getIntance() {
-		if (instance == null) 
+		if (instance == null)
 			instance = new MySqlUserDAO();
 		return instance;
 	}
-	
+
 	@Override
 	public User findByName(String name) throws SQLException {
-		Connection connection = daoFactory.getConnection();
-		List<User> list = new ArrayList<>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			ps = connection.prepareStatement("SELECT * FROM Users WHERE name = ?");
-			ps.setString(1, name);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				User user = new User();
-				user.setId(rs.getInt("id"));
-				user.setName(rs.getString("name"));
-				list.add(user);
-			}
-		} finally {
-			ps.close();
-			rs.close();
-			connection.close();
-		}
-		if (list.size() != 0)
-			return list.get(0);
-		return null;
+		List<User> list = findByField(daoFactory.getConnection(), "SELECT * FROM Users WHERE name = ?", name);
+		if (list.isEmpty())
+			throw new SQLException();
+		return list.get(0);
 	}
 
 	@Override
@@ -62,12 +42,55 @@ public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 	}
 
 	@Override
-	protected User mapToEntity(ResultSet rs) throws SQLException{
-		User user = new User();
-		user.setId(rs.getInt("id"));
-		user.setName(rs.getString("name"));
-		return user;
+	public User findById(int userId) throws SQLException {
+		List<User> list = findByField(daoFactory.getConnection(), "SELECT * FROM Users WHERE id = ?", userId);
+		if (list.isEmpty())
+			throw new SQLException();
+		return list.get(0);
+
+	}
+
+	@Override
+	public void add(User user) throws SQLException {
+		int id = add(daoFactory.getConnection(),
+				"INSERT INTO Users (name, pwd, status, enabled, image, role_id) VALUES (?, ?, ?, ?, ?, ?)", user);
+		user.setId(id);
+		if (id == 0)
+			throw new SQLException();
+	}
+
+	@Override
+	public void update(User user) throws SQLException {
+		updateByField(daoFactory.getConnection(),
+				"UPDATE Users SET name=?, pwd=?, status=?, enabled=?, image=?, role_id=? WHERE id = ?", user, 7, user.getId());
+	}
+
+	@Override
+	public void delete(int userId) throws SQLException {
+		deleteByField(daoFactory.getConnection(), "DELETE FROM Users WHERE id = ?", userId);
 	}
 
 
+	@Override
+	protected User mapToEntity(ResultSet rs) throws SQLException {
+		User user = new User();
+		user.setId(rs.getInt("id"));
+		user.setName(rs.getString("name"));
+		user.setPwd(rs.getString("pwd"));
+		user.setStatus(rs.getString("status"));
+		user.setEnabled(rs.getBoolean("enabled"));
+		user.setImage(rs.getString("image"));
+		user.setRoleId(rs.getInt("role_id"));
+		return user;
+	}
+	
+	@Override
+	protected void mapFromEntity(PreparedStatement ps, User user) throws SQLException {
+		ps.setString(1, user.getName());
+		ps.setString(2, user.getPwd());
+		ps.setString(3, user.getStatus());
+		ps.setBoolean(4, user.isEnabled());
+		ps.setString(5, user.getImage());
+		ps.setInt(6, user.getRoleId());
+	}
 }

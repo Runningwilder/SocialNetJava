@@ -1,5 +1,6 @@
 package com.Socialnet.project.dao.mysql;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -35,6 +36,12 @@ public class MySqlMessageDAO extends GenericDAO<Message> implements IMessageDAO 
 		msg.setId(rs.getInt("id"));
 		msg.setContent(rs.getString("content"));
 		return msg;
+	}
+
+	@Override
+	protected void mapFromEntity(PreparedStatement ps, Message obj) throws SQLException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
