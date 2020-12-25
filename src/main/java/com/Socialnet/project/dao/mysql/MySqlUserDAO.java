@@ -30,7 +30,7 @@ public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 	
 	@Override
 	public User findByName(String name) throws SQLException {
-		List<User> list = findByField(daoFactory.getConnection(), "SELECT * FROM Users WHERE name = ?", name);
+		List<User> list = findByFields(daoFactory.getConnection(), "SELECT * FROM Users WHERE name = ?", name);
 		if (list.isEmpty())
 			throw new SQLException();
 		return list.get(0);
@@ -44,7 +44,7 @@ public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 
 	@Override
 	public User findById(int userId) throws SQLException {
-		List<User> list = findByField(daoFactory.getConnection(), "SELECT * FROM Users WHERE id = ?", userId);
+		List<User> list = findByFields(daoFactory.getConnection(), "SELECT * FROM Users WHERE id = ?", userId);
 		if (list.isEmpty())
 			throw new SQLException();
 		return list.get(0);
