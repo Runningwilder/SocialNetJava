@@ -27,22 +27,25 @@ public abstract class GenericDAO<T> {
 		return list;
 	}
 
-	protected <V> List<T> findByField(Connection connection, String sql, V value) throws SQLException {
+	protected <V> List<T> findByFields(Connection connection, String sql, @SuppressWarnings("unchecked") V... values) throws SQLException {
 		List<T> list = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
 			ps = connection.prepareStatement(sql);
-			switch (value.getClass().getSimpleName()) {
-			case "Integer":
-				ps.setInt(1, (Integer) value);
-				break;
-			case "String":
-				ps.setString(1, (String) value);
-				break;
-			default:
-				throw new IllegalArgumentException();
+			for (int i = 1; i <= values.length; i++) {
+				V value = values[i - 1];
+				switch (value.getClass().getSimpleName()) {
+				case "Integer":
+					ps.setInt(i, (Integer) value);
+					break;
+				case "String":
+					ps.setString(i, (String) value);
+					break;
+				default:
+					throw new IllegalArgumentException();
+				}
 			}
 			rs = ps.executeQuery();
 			while (rs.next()) {
@@ -53,8 +56,8 @@ public abstract class GenericDAO<T> {
 		}
 		return list;
 	}
-	
-	protected int add (Connection connection, String sql, T item) throws SQLException{
+
+	protected int add(Connection connection, String sql, T item) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -66,14 +69,15 @@ public abstract class GenericDAO<T> {
 				if (rs.next())
 					return rs.getInt(1);
 			}
-			
+
 		} finally {
 			closeStatementsAndResultSet(ps, rs, connection);
 		}
 		throw new SQLException("Not added");
 	}
-	
-	protected <V> void updateByField(Connection connection, String sql, T item, int parameterIndex, V value) throws SQLException{
+
+	protected <V> void updateByField(Connection connection, String sql, T item, int parameterIndex, V value)
+			throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
@@ -92,7 +96,7 @@ public abstract class GenericDAO<T> {
 			mapFromEntity(ps, item);
 			if (ps.executeUpdate() == 0)
 				throw new SQLException("Not updated");
-			
+
 		} finally {
 			closeStatementsAndResultSet(ps, rs, connection);
 		}
@@ -116,13 +120,12 @@ public abstract class GenericDAO<T> {
 			}
 			if (ps.executeUpdate() == 0)
 				throw new SQLException("Not deleted");
-			
+
 		} finally {
 			closeStatementsAndResultSet(ps, rs, connection);
 		}
 	}
-	
-	
+
 	private void closeStatementsAndResultSet(PreparedStatement ps, ResultSet rs, Connection connection) {
 		if (ps != null) {
 			try {

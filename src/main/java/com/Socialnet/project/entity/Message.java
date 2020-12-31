@@ -1,11 +1,11 @@
 package com.Socialnet.project.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Message {
 
 	private int id;
-	private LocalDate time;
+	private LocalDateTime time;
 	private String content;
 	private int fromId;
 	private int toId;
@@ -18,11 +18,11 @@ public class Message {
 		this.id = id;
 	}
 
-	public LocalDate getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
 
-	public void setTime(LocalDate time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 

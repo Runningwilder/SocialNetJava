@@ -1,11 +1,7 @@
 package com.Socialnet.project.dao.mysql;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -15,12 +11,11 @@ import javax.sql.DataSource;
 import com.Socialnet.project.dao.DaoFactory;
 import com.Socialnet.project.dao.IMessageDAO;
 import com.Socialnet.project.dao.IUserDAO;
-import com.Socialnet.project.entity.User;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
 public class MySqlDAOFactory extends DaoFactory {
 	private DataSource ds = new MysqlConnectionPoolDataSource();
-	
+
 	private MySqlDAOFactory() {
 		Context initCtx;
 		try {
@@ -34,7 +29,7 @@ public class MySqlDAOFactory extends DaoFactory {
 			System.out.println("Connection failed");
 		}
 	}
-	
+
 	private static MySqlDAOFactory instance;
 
 	public static DaoFactory getInstance() {
@@ -42,7 +37,7 @@ public class MySqlDAOFactory extends DaoFactory {
 			instance = new MySqlDAOFactory();
 		return instance;
 	}
-	
+
 	@Override
 	public Connection getConnection() {
 		try {
@@ -51,7 +46,7 @@ public class MySqlDAOFactory extends DaoFactory {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 	@Override
