@@ -1,5 +1,6 @@
 package com.Socialnet.project.dao.mysql;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,42 +28,48 @@ public class MySqlMessageDAO extends GenericDAO<Message> implements IMessageDAO 
 	}
 
 	@Override
-	public void add(Message message) throws SQLException {
-		int id = add(daoFactory.getConnection(),
+	public void add(Connection connection, Message message) throws SQLException {
+		int id = add(connection,
 				"INSERT INTO Messages (time, content, from_id, to_id) VALUES (?, ?, ?, ?)", message);
 		message.setId(id);
 	}
 
 	@Override
-	public Message findById(int messageId) throws SQLException {
-		List<Message> list = findByFields(daoFactory.getConnection(), "SELECT * FROM Messages WHERE id = ?", messageId);
+	public Message findById(Connection connection, int messageId) throws SQLException {
+		List<Message> list = findByFields(connection, "SELECT * FROM Messages WHERE id = ?", messageId);
 		if (list.isEmpty())
 			throw new SQLException();
 		return list.get(0);
 	}
 
 	@Override
-	public List<Message> findByContent(String substring) throws SQLException {
-		return findByFields(daoFactory.getConnection(), "SELECT * FROM Messages WHERE content LIKE ?", substring);
+	public List<Message> findByContent(Connection connection, String substring) throws SQLException {
+		return findByFields(connection, "SELECT * FROM Messages WHERE content LIKE ?", substring);
 	}
 
 	@Override
-	public List<Message> findByFields(int fromUserId, int toUserId) throws SQLException {
-		return findByFields(daoFactory.getConnection(), "SELECT * FROM Messages WHERE from_id = ? AND to_id = ?",
+	public List<Message> findByFields(Connection connection, int fromUserId, int toUserId) throws SQLException {
+		return findByFields(connection, "SELECT * FROM Messages WHERE from_id = ? AND to_id = ?",
 				fromUserId, toUserId);
 	}
 
 	@Override
-	public void update(Message message) throws SQLException {
-		updateByField(daoFactory.getConnection(),
+	public void update(Connection connection, Message message) throws SQLException {
+		updateByField(connection,
 				"UPDATE Messages SET time = ?, content = ?, from_id = ?, to_id = ? WHERE id = ?", message, 5,
 				message.getId());
 	}
 
 	@Override
-	public List<Message> findAll() throws SQLException {
-		return findAll(daoFactory.getConnection(), "SELECT * FROM Messages");
+	public List<Message> findAll(Connection connection) throws SQLException {
+		return findAll(connection, "SELECT * FROM Messages");
 	}
+
+	@Override
+	public int getCount(Connection connection) throws SQLException {
+		return getCountByFields(connection, "SELECT COUNT(*) FROM Messages where from_id = 2");
+	}
+
 
 	@Override
 	protected Message mapToEntity(ResultSet rs) throws SQLException {

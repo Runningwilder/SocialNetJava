@@ -33,7 +33,7 @@ public class FrontController extends HttpServlet {
 		try {
 			return iCommand.execute(req, resp);
 		} catch (SQLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return null;
 		}
 	}

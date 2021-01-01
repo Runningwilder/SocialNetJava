@@ -1,5 +1,6 @@
 package com.Socialnet.project.service.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,32 +35,73 @@ public class MySqlUserService implements IUserService {
 
 	@Override
 	public void addUser(User user) throws SQLException {
-		userDao.add(user);
+		Connection con = null;
+		try {
+			con = daoFactory.beginTransation();
+			User bruce = null;
+			try {
+				bruce = userDao.findByName(con, user.getName());
+			} catch (SQLException e) {
+				System.out.println(Thread.currentThread().getName() + ": user not found");
+			}
+			if (bruce == null) {
+				userDao.add(con, user);
+				System.out.println(Thread.currentThread().getName() + ": added new user");
+			}
+
+			con.commit();
+		} catch (SQLException e) {
+			daoFactory.rollback(con);
+			throw e;
+		} finally {
+			daoFactory.endTransaction(con);
+		}
+
+//		userDao.add(daoFactory.open(),user);
 	}
 
 	@Override
 	public void updateUser(User user) throws SQLException {
-		userDao.update(user);
+		userDao.update(daoFactory.open(), user);
 	}
 
 	@Override
 	public void deleteUserById(int id) throws SQLException {
-		userDao.delete(id);
+		userDao.delete(daoFactory.open(), id);
 	}
 
 	@Override
 	public List<User> findAllUsers() throws SQLException {
-		return userDao.findAll();
+		List<User> users;
+		Connection con = null;
+		try {
+			con = daoFactory.beginTransation();
+
+			users = userDao.findAll(con);
+			System.out.println("Users count: " + users.size());
+
+			users = userDao.findAll(con);
+			System.out.println("Users count: " + users.size());
+
+			con.commit();
+		} catch (SQLException e) {
+			daoFactory.rollback(con);
+			throw e;
+		} finally {
+			daoFactory.endTransaction(con);
+		}
+		return users;
+//		return userDao.findAll(daoFactory.open());
 	}
 
 	@Override
 	public User findUserById(int userId) throws SQLException {
-		return userDao.findById(userId);
+		return userDao.findById(daoFactory.open(), userId);
 	}
 
 	@Override
 	public User findUserByName(String name) throws SQLException {
-		return userDao.findByName(name);
+		return userDao.findByName(daoFactory.open(), name);
 	}
 
 }

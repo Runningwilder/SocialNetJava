@@ -16,4 +16,6 @@ public interface IMessageService {
 	List<Message> findMessagesByContent(String substring) throws SQLException;
 
 	List<Message> findMessageFromUserToUser(int fromUserId, int toUserId) throws SQLException;
+	
+	int getCount() throws SQLException;
 }

@@ -38,17 +38,30 @@ public class MySqlDAOFactory extends DaoFactory {
 		return instance;
 	}
 
-	@Override
-	public Connection getConnection() {
+//	@Override
+//	public Connection getConnection() {
+//		return connection;
+////		try {
+////			Connection con =  ds.getConnection();
+////			con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+//////			con.setTransactionIsolation(Connection.);
+////			return con;
+////		} catch (SQLException e) {
+////			e.printStackTrace();
+////			return null;
+////		}
+//
+//	}
+	
+	public Connection open() throws SQLException {
 		try {
 			return ds.getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw e;
 		}
-
 	}
-
+	
 	@Override
 	public IUserDAO getUserDAO() {
 		return MySqlUserDAO.getIntance();

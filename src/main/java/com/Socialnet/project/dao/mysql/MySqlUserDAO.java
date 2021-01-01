@@ -1,5 +1,6 @@
 package com.Socialnet.project.dao.mysql;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,44 +27,44 @@ public class MySqlUserDAO extends GenericDAO<User> implements IUserDAO {
 	}
 
 	@Override
-	public User findByName(String name) throws SQLException {
-		List<User> list = findByFields(daoFactory.getConnection(), "SELECT * FROM Users WHERE name = ?", name);
+	public User findByName(Connection connection, String name) throws SQLException {
+		List<User> list = findByFields(connection, "SELECT * FROM Users WHERE name = ?", name);
 		if (list.isEmpty())
 			throw new SQLException();
 		return list.get(0);
 	}
 
 	@Override
-	public List<User> findAll() throws SQLException {
-		return findAll(daoFactory.getConnection(), "SELECT * FROM Users");
+	public List<User> findAll(Connection connection) throws SQLException {
+		return findAll(connection, "SELECT * FROM Users");
 	}
 
 	@Override
-	public User findById(int userId) throws SQLException {
-		List<User> list = findByFields(daoFactory.getConnection(), "SELECT * FROM Users WHERE id = ?", userId);
+	public User findById(Connection connection, int userId) throws SQLException {
+		List<User> list = findByFields(connection, "SELECT * FROM Users WHERE id = ?", userId);
 		if (list.isEmpty())
 			throw new SQLException();
 		return list.get(0);
 	}
 
 	@Override
-	public void add(User user) throws SQLException {
-		int id = add(daoFactory.getConnection(),
+	public void add(Connection connection, User user) throws SQLException {
+		int id = add(connection,
 				"INSERT INTO Users (name, pwd, status, enabled, image, role_id) VALUES (?, ?, ?, ?, ?, ?)", user);
 		user.setId(id);
 	}
 
 	@Override
-	public void update(User user) throws SQLException {
-		updateByField(daoFactory.getConnection(),
+	public void update(Connection connection, User user) throws SQLException {
+		updateByField(connection,
 				"UPDATE Users SET name=?, pwd=?, status=?, enabled=?, image=?, role_id=? WHERE id = ?", user, 7,
 				user.getId());
 
 	}
 
 	@Override
-	public void delete(int userId) throws SQLException {
-		deleteByField(daoFactory.getConnection(), "DELETE FROM Users WHERE id = ?", userId);
+	public void delete(Connection connection, int userId) throws SQLException {
+		deleteByField(connection, "DELETE FROM Users WHERE id = ?", userId);
 	}
 
 	@Override
