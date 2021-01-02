@@ -1,5 +1,6 @@
 package com.Socialnet.project.service.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,32 +35,83 @@ public class MySqlUserService implements IUserService {
 
 	@Override
 	public void addUser(User user) throws SQLException {
-		userDao.add(user);
+		Connection con = null;
+		try {
+			con = daoFactory.beginTransaction();
+			userDao.add(con, user);
+			con.commit();
+		} catch (SQLException e) {
+			daoFactory.rollback(con);
+			throw e;
+		} finally {
+			daoFactory.endTransaction(con);
+		}
 	}
 
 	@Override
 	public void updateUser(User user) throws SQLException {
-		userDao.update(user);
+		Connection con = null;
+		try {
+			con = daoFactory.beginTransaction();
+			userDao.update(con, user);
+			con.commit();
+		} catch (SQLException e) {
+			daoFactory.rollback(con);
+			throw e;
+		} finally {
+			daoFactory.endTransaction(con);
+		}
 	}
 
 	@Override
 	public void deleteUserById(int id) throws SQLException {
-		userDao.delete(id);
+		Connection con = null;
+		try {
+			con = daoFactory.beginTransaction();
+			userDao.delete(con, id);
+			con.commit();
+		} catch (SQLException e) {
+			daoFactory.rollback(con);
+			throw e;
+		} finally {
+			daoFactory.endTransaction(con);
+		}
 	}
 
 	@Override
 	public List<User> findAllUsers() throws SQLException {
-		return userDao.findAll();
+		Connection con = null;
+		try {
+			con = daoFactory.open();
+			return userDao.findAll(con);
+		} finally {
+			daoFactory.close(con);
+		}
 	}
 
 	@Override
 	public User findUserById(int userId) throws SQLException {
-		return userDao.findById(userId);
+		Connection con = null;
+		try {
+			con = daoFactory.open();
+			return userDao.findById(con, userId);
+		} finally {
+			daoFactory.close(con);
+		}
+
 	}
 
 	@Override
 	public User findUserByName(String name) throws SQLException {
-		return userDao.findByName(name);
+
+		Connection con = null;
+		try {
+			con = daoFactory.open();
+			return userDao.findByName(con, name);
+		} finally {
+			daoFactory.close(con);
+		}
+
 	}
 
 }

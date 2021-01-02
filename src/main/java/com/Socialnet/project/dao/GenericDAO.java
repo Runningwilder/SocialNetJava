@@ -27,7 +27,8 @@ public abstract class GenericDAO<T> {
 		return list;
 	}
 
-	protected <V> List<T> findByFields(Connection connection, String sql, @SuppressWarnings("unchecked") V... values) throws SQLException {
+	protected <V> List<T> findByFields(Connection connection, String sql, @SuppressWarnings("unchecked") V... values)
+			throws SQLException {
 		List<T> list = new ArrayList<>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -141,13 +142,13 @@ public abstract class GenericDAO<T> {
 				e.printStackTrace();
 			}
 		}
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+//		if (connection != null) {
+//			try {
+//				connection.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	protected abstract T mapToEntity(ResultSet rs) throws SQLException;
