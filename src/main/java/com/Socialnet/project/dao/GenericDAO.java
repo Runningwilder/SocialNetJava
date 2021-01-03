@@ -29,33 +29,34 @@ public abstract class GenericDAO<T> {
 
 	protected <V> List<T> findByFields(Connection connection, String sql, @SuppressWarnings("unchecked") V... values)
 			throws SQLException {
-		List<T> list = new ArrayList<>();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-
-		try {
-			ps = connection.prepareStatement(sql);
-			for (int i = 1; i <= values.length; i++) {
-				V value = values[i - 1];
-				switch (value.getClass().getSimpleName()) {
-				case "Integer":
-					ps.setInt(i, (Integer) value);
-					break;
-				case "String":
-					ps.setString(i, (String) value);
-					break;
-				default:
-					throw new IllegalArgumentException();
-				}
-			}
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				list.add(mapToEntity(rs));
-			}
-		} finally {
-			closeStatementsAndResultSet(ps, rs, connection);
-		}
-		return list;
+		throw new SQLException("test");
+//		List<T> list = new ArrayList<>();
+//		PreparedStatement ps = null;
+//		ResultSet rs = null;
+//
+//		try {
+//			ps = connection.prepareStatement(sql);
+//			for (int i = 1; i <= values.length; i++) {
+//				V value = values[i - 1];
+//				switch (value.getClass().getSimpleName()) {
+//				case "Integer":
+//					ps.setInt(i, (Integer) value);
+//					break;
+//				case "String":
+//					ps.setString(i, (String) value);
+//					break;
+//				default:
+//					throw new IllegalArgumentException();
+//				}
+//			}
+//			rs = ps.executeQuery();
+//			while (rs.next()) {
+//				list.add(mapToEntity(rs));
+//			}
+//		} finally {
+//			closeStatementsAndResultSet(ps, rs, connection);
+//		}
+//		return list;
 	}
 
 	protected int add(Connection connection, String sql, T item) throws SQLException {

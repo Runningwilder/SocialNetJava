@@ -18,7 +18,8 @@ public class FrontController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String forward = handleRequest(req, resp);
-		req.getRequestDispatcher(forward + ".jsp").forward(req, resp);
+		if (forward != null)
+			req.getRequestDispatcher(forward + ".jsp").forward(req, resp);
 	}
 
 	@Override
@@ -33,8 +34,21 @@ public class FrontController extends HttpServlet {
 		try {
 			return iCommand.execute(req, resp);
 		} catch (SQLException e) {
+			req.getSession().setAttribute("error", e.getMessage());
 			e.printStackTrace();
-			return null;
+			System.out.println("Error: " + e.getMessage());
+//			return "ErrorPage";
+//			e.printStackTrace();
+//			throw new ServletException(e);
+//			return null;
 		}
+		try {
+			
+			resp.sendRedirect("?command=ERROR_PAGE");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

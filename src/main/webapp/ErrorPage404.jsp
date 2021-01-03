@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	Error :( </br>
-	Error Message: <%= request.getSession().getAttribute("error") %>
+	Error 404 :(
 </body>
 </html>

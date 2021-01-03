@@ -1,11 +1,12 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
 
-<web-app>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
 	<display-name>Archetype Created Web Application</display-name>
-  
-  	<servlet>
+
+	<servlet>
 		<servlet-name>FrontController</servlet-name>
 		<servlet-class>com.Socialnet.project.controller.FrontController</servlet-class>
 	</servlet>
@@ -13,5 +14,23 @@
 		<servlet-name>FrontController</servlet-name>
 		<url-pattern>/controller</url-pattern>
 	</servlet-mapping>
+
+
+<!-- 	<error-page> -->
+<!-- 		<error-code>404</error-code> -->
+<!-- 		<location>/ErrorPage404.jsp</location> -->
+<!-- 	</error-page> -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/ErrorPage404.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/ErrorPage404.jsp</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.IllegalArgumentException</exception-type>
+		<location>/Illegal.jsp</location>
+	</error-page>
 </web-app>
 
